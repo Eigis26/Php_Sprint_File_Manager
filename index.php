@@ -146,7 +146,19 @@ if (isset($_SESSION['logged_in']) and $_SESSION['logged_in'] == true){
             echo "<div class = err_ex>This kind type of file not allowed, cannot upload it</div>";
         }
     }
+    if(isset($_POST['back'])){
+        header("Location:" . (dirname($_SERVER['REQUEST_URI'])). '/');
+    }
+
+       if(isset($_POST['deleted'])){
+        $file_delete = $_POST['delete'];
        
+        if($file_delete!=="index.php" && $file_delete!=="style.css"){
+                unlink($path . preg_replace('/\s/u',' ', $file_delete));
+                header("Refresh: 0");
+        } else {
+            echo "<div class = err_ex>You can't delete index and style files</div>";
+        }}
     print ('<table><th>Type</th><th>Name</th><th>Actions</th>');
     foreach($explore_files as $find_files) {
         if ($find_files != ".." && $find_files != "."){
