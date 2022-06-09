@@ -91,6 +91,61 @@ if (isset($_SESSION['logged_in']) and $_SESSION['logged_in'] == true){
          }
         }
     }
+    if(isset($_POST['download'])){
+        $file_dw=$_POST['downloadas'];
+
+        if($file_dw !== "index.php" && $file_dw !== "style.css"){
+        $download_file = $path . $file_dw;
+        $fileToDownloadEscaped = str_replace("&nbsp;", " ", htmlentities($download_file, 0, 'utf-8'));
+        ob_clean();
+        ob_start();
+        header('Content-Description: File Transfer');
+        header('Content-Type: application/pdf');
+        header('Content-Disposition: attachment; filename=' . basename($fileToDownloadEscaped));
+        header('Content-Transfer-Encoding: binary');
+        header('Expires: 0');
+        header('Cache-Control: must-revalidate, post-check=0, pre-check=0');
+        header('Pragma: public');
+        header('Content-Length: ' . filesize($fileToDownloadEscaped));
+        ob_end_flush();
+        readfile($fileToDownloadEscaped);
+        exit;
+        }else {
+            echo "<div class = err_ex>Index or style files cannot download</div>";
+        }
+    }
+
+    if (isset($_POST['submit'])) {
+        $file = $_FILES['file'];
+    
+        $file_name = $file['name'];
+        $file_tmpName = $file['tmp_name'];
+        $file_size = $file['size'];
+        $file_size_limit = 6097152;
+        $file_error = $file['error'];
+        $file_type = $file['type'];
+        $file_extension = explode('.', $file_name);
+        $file_actual_extension = strtolower(end($file_extension));
+    
+        $allowed = ['jpg', 'jpeg', 'png', 'pdf', 'txt'];
+    
+        if (in_array($file_actual_extension, $allowed)) {
+            if ($file_error === 0) {
+                if ($file_size < $file_size_limit) {
+                    $newFileName = uniqid('', true) . $file_actual_extension;
+                    $fileDirectory = $path . $newFileName;
+                    move_uploaded_file($file_tmpName, $fileDirectory);
+                    header("Refresh: 0");
+                } else {
+                    echo '<div class = err_ex>Your file size is too big! ' . $file_size_limit . ' byte is the limit.</div>';
+                }
+            } else {
+                echo "<div class = err_ex>Error appeared when uploading the file...</div>";
+            }
+        } else {
+            echo "<div class = err_ex>This kind type of file not allowed, cannot upload it</div>";
+        }
+    }
        
     print ('<table><th>Type</th><th>Name</th><th>Actions</th>');
     foreach($explore_files as $find_files) {
