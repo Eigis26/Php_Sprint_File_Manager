@@ -63,7 +63,34 @@ if (isset($_SESSION['logged_in']) and $_SESSION['logged_in'] == true){
         <input class = btn_back type="submit" name="back" value=' . str_replace(' ', '&nbsp;', 'Back') . '>
         </form>');
     }
-    
+    if (isset($_POST['create'])){
+        $crt_file = $_POST['createfile'];
+        if(str_contains($crt_file , ".")){
+         
+         if (!file_exists($path . $crt_file )){
+             if(is_dir($path)){
+                 print $path . $crt_file;
+                fopen($path . $crt_file, "w");
+                header("Refresh:0");
+             }
+         }
+         else{
+             echo "<div class = err_ex><p>File with same file name is already exist</p></div>";
+         }
+        }
+        else{
+ 
+            if (!file_exists($path . $crt_file )){
+            if(is_dir($path)){
+            mkdir($path . $crt_file);
+            header("Refresh:0");
+            }
+         }
+         else{
+             print "<div class = err_ex><p>Directory with same directory name is already exist</p></div>";
+         }
+        }
+    }
        
     print ('<table><th>Type</th><th>Name</th><th>Actions</th>');
     foreach($explore_files as $find_files) {
