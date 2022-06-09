@@ -180,6 +180,9 @@ if (isset($_SESSION['logged_in']) and $_SESSION['logged_in'] == true){
     };
 }
  ?>
-
+<script>
+if ( window.history.replaceState ) {
+  window.history.replaceState( null, null, window.location.href );
+}</script>
 </body>
 </html>
